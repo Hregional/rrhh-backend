@@ -1,133 +1,145 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
 namespace rrhh_backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class inicialMysql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "AdminEstado",
                 columns: table => new
                 {
                     IdEstado = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     NombreEstado = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: false),
-                    Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: true)
+                    Descripcion = table.Column<string>(type: "longtext", unicode: false, maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AdminEstado", x => x.IdEstado);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminPermisos",
                 columns: table => new
                 {
                     IdPermiso = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     NombrePermiso = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: false),
                     DescripcionPermiso = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AdminPermisos", x => x.IdPermiso);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminRoles",
                 columns: table => new
                 {
                     IdRole = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     NombreRol = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: false),
                     DescripcionRol = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AdminRoles", x => x.IdRole);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHDepartamento",
                 columns: table => new
                 {
                     IdDepartamentos = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     NombreDepartamento = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: false),
                     DescripcionDepartamento = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RHDepartamento", x => x.IdDepartamentos);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHEstadoCivil",
                 columns: table => new
                 {
                     IdEstadoCivil = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     EstadoCivil = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RHEstadoCivil", x => x.IdEstadoCivil);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHEstadoColaborador",
                 columns: table => new
                 {
                     IdEstadoColaborador = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     EstadosColaborador = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RHEstadoColaborador", x => x.IdEstadoColaborador);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHEstadoLicencias",
                 columns: table => new
                 {
                     IdEstadoLicencia = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EstadoLicencia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    EstadoLicencia = table.Column<string>(type: "longtext", nullable: false),
+                    Descripcion = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RHEstadoLicencias", x => x.IdEstadoLicencia);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHTipoLicencias",
                 columns: table => new
                 {
                     IdTipoLicencia = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoLicencia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    TipoLicencia = table.Column<string>(type: "longtext", nullable: false),
+                    Descripcion = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RHTipoLicencias", x => x.IdTipoLicencia);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminRolesPermisos",
                 columns: table => new
                 {
                     IdRolePermiso = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     IdRole = table.Column<int>(type: "int", nullable: false),
                     IdPermiso = table.Column<int>(type: "int", nullable: false)
                 },
@@ -144,38 +156,39 @@ namespace rrhh_backend.Migrations
                         column: x => x.IdPermiso,
                         principalTable: "AdminPermisos",
                         principalColumn: "IdPermiso");
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHColaborador",
                 columns: table => new
                 {
                     IdColaborador = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     IdDepartamento = table.Column<int>(type: "int", nullable: false),
                     IdEstadoColaborador = table.Column<int>(type: "int", nullable: false),
                     IdEstadoCivil = table.Column<int>(type: "int", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Dpi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrimerApellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SegundoApellido = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ApellidoCasada = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MunicipioExtendido = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DepartamentoExtendido = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LugarNacimiento = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NoCuentaBancaria = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Nacionalidad = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NoIGSS = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NoNIT = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NombreConyuge = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FechaInicioLabores = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Debaja = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Foto = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Codigo = table.Column<string>(type: "longtext", nullable: true),
+                    Dpi = table.Column<string>(type: "longtext", nullable: false),
+                    Nombres = table.Column<string>(type: "longtext", nullable: false),
+                    PrimerApellido = table.Column<string>(type: "longtext", nullable: false),
+                    SegundoApellido = table.Column<string>(type: "longtext", nullable: true),
+                    ApellidoCasada = table.Column<string>(type: "longtext", nullable: true),
+                    MunicipioExtendido = table.Column<string>(type: "longtext", nullable: true),
+                    DepartamentoExtendido = table.Column<string>(type: "longtext", nullable: true),
+                    LugarNacimiento = table.Column<string>(type: "longtext", nullable: true),
+                    Telefono = table.Column<string>(type: "longtext", nullable: true),
+                    NoCuentaBancaria = table.Column<string>(type: "longtext", nullable: true),
+                    Nacionalidad = table.Column<string>(type: "longtext", nullable: true),
+                    NoIGSS = table.Column<string>(type: "longtext", nullable: true),
+                    NoNIT = table.Column<string>(type: "longtext", nullable: true),
+                    NombreConyuge = table.Column<string>(type: "longtext", nullable: true),
+                    Direccion = table.Column<string>(type: "longtext", nullable: true),
+                    FechaNacimiento = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false),
+                    FechaInicioLabores = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Debaja = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    Foto = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -198,14 +211,15 @@ namespace rrhh_backend.Migrations
                         principalTable: "RHEstadoColaborador",
                         principalColumn: "IdEstadoColaborador",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminUser",
                 columns: table => new
                 {
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     NombreUsuario = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: false),
                     Password = table.Column<string>(type: "varchar(55)", unicode: false, maxLength: 55, nullable: false),
                     Email = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
@@ -226,18 +240,19 @@ namespace rrhh_backend.Migrations
                         column: x => x.IdEstado,
                         principalTable: "AdminEstado",
                         principalColumn: "IdEstado");
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHHistorialDepartamento",
                 columns: table => new
                 {
                     IdHistorialDepartamento = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     IdColaborador = table.Column<int>(type: "int", nullable: false),
                     IdDepartamento = table.Column<int>(type: "int", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    FechaInicio = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -254,18 +269,19 @@ namespace rrhh_backend.Migrations
                         principalTable: "RHDepartamento",
                         principalColumn: "IdDepartamentos",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "RHLicencias",
                 columns: table => new
                 {
                     IdLicencias = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     IdColaborador = table.Column<int>(type: "int", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaInicio = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Observaciones = table.Column<string>(type: "longtext", nullable: true),
                     IdTipoLicencia = table.Column<int>(type: "int", nullable: false),
                     IdEstadoLicencia = table.Column<int>(type: "int", nullable: false)
                 },
@@ -290,14 +306,15 @@ namespace rrhh_backend.Migrations
                         principalTable: "RHTipoLicencias",
                         principalColumn: "IdTipoLicencia",
                         onDelete: ReferentialAction.Restrict);
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminBitacoraUsuario",
                 columns: table => new
                 {
                     IdBitacoraUser = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     AccionBitacora = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     FechaBitacora = table.Column<DateTime>(type: "datetime", nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: true)
@@ -310,14 +327,15 @@ namespace rrhh_backend.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "AdminUser",
                         principalColumn: "IdUsuario");
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminResetPassword",
                 columns: table => new
                 {
                     IdToken = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     NombreToken = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
                     FechaCreacionToken = table.Column<DateTime>(type: "datetime", nullable: false),
                     FechaExpiracionToken = table.Column<DateTime>(type: "datetime", nullable: false),
@@ -331,14 +349,15 @@ namespace rrhh_backend.Migrations
                         column: x => x.IdUsuario,
                         principalTable: "AdminUser",
                         principalColumn: "IdUsuario");
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "AdminUserRoles",
                 columns: table => new
                 {
                     IdUserRoles = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     IdRole = table.Column<int>(type: "int", nullable: false),
                     FechaAsignacion = table.Column<DateTime>(type: "datetime", nullable: false)
@@ -356,7 +375,8 @@ namespace rrhh_backend.Migrations
                         column: x => x.IdRole,
                         principalTable: "AdminRoles",
                         principalColumn: "IdRole");
-                });
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Relationship3",
@@ -382,8 +402,7 @@ namespace rrhh_backend.Migrations
                 name: "IX_AdminUser_IdColaborador",
                 table: "AdminUser",
                 column: "IdColaborador",
-                unique: true,
-                filter: "[IdColaborador] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Relationship1",

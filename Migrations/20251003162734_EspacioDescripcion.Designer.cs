@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rrhh_backend.Data;
@@ -12,8 +11,8 @@ using rrhh_backend.Data;
 namespace rrhh_backend.Migrations
 {
     [DbContext(typeof(RrHhContext))]
-    [Migration("20241112032119_Init")]
-    partial class Init
+    [Migration("20251003162734_EspacioDescripcion")]
+    partial class EspacioDescripcion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,17 +20,13 @@ namespace rrhh_backend.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("rrhh_backend.Data.Models.AdminBitacoraUsuario", b =>
                 {
                     b.Property<int>("IdBitacoraUser")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBitacoraUser"));
 
                     b.Property<string>("AccionBitacora")
                         .IsRequired()
@@ -58,12 +53,10 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstado"));
-
                     b.Property<string>("Descripcion")
                         .HasMaxLength(255)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NombreEstado")
                         .IsRequired()
@@ -81,8 +74,6 @@ namespace rrhh_backend.Migrations
                     b.Property<int>("IdPermiso")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPermiso"));
 
                     b.Property<string>("DescripcionPermiso")
                         .HasMaxLength(55)
@@ -105,8 +96,6 @@ namespace rrhh_backend.Migrations
                     b.Property<int>("IdToken")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdToken"));
 
                     b.Property<DateTime>("FechaCreacionToken")
                         .HasColumnType("datetime");
@@ -136,8 +125,6 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRole"));
-
                     b.Property<string>("DescripcionRol")
                         .HasMaxLength(100)
                         .IsUnicode(false)
@@ -160,8 +147,6 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRolePermiso"));
-
                     b.Property<int>("IdPermiso")
                         .HasColumnType("int");
 
@@ -182,8 +167,6 @@ namespace rrhh_backend.Migrations
                     b.Property<int>("IdUsuario")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -215,8 +198,7 @@ namespace rrhh_backend.Migrations
                     b.HasKey("IdUsuario");
 
                     b.HasIndex("IdColaborador")
-                        .IsUnique()
-                        .HasFilter("[IdColaborador] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex(new[] { "IdEstado" }, "IX_Relationship1");
 
@@ -228,8 +210,6 @@ namespace rrhh_backend.Migrations
                     b.Property<int>("IdUserRoles")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUserRoles"));
 
                     b.Property<DateTime>("FechaAsignacion")
                         .HasColumnType("datetime");
@@ -255,39 +235,37 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdColaborador"));
-
                     b.Property<string>("ApellidoCasada")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Codigo")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("Debaja")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("DepartamentoExtendido")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Direccion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Dpi")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime?>("FechaInicioLabores")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Foto")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("IdDepartamento")
                         .HasColumnType("int");
@@ -299,39 +277,39 @@ namespace rrhh_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("LugarNacimiento")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("MunicipioExtendido")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Nacionalidad")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NoCuentaBancaria")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NoIGSS")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NoNIT")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NombreConyuge")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Nombres")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PrimerApellido")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("SegundoApellido")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Telefono")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("IdColaborador");
 
@@ -354,18 +332,16 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDepartamentos"));
-
                     b.Property<string>("DescripcionDepartamento")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NombreDepartamento")
                         .IsRequired()
                         .HasMaxLength(55)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(55)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("IdDepartamentos");
 
@@ -377,8 +353,6 @@ namespace rrhh_backend.Migrations
                     b.Property<int>("IdEstadoCivil")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstadoCivil"));
 
                     b.Property<string>("EstadoCivil")
                         .IsRequired()
@@ -396,8 +370,6 @@ namespace rrhh_backend.Migrations
                     b.Property<int>("IdEstadoColaborador")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstadoColaborador"));
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
@@ -422,14 +394,12 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstadoLicencia"));
-
                     b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("EstadoLicencia")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("IdEstadoLicencia");
 
@@ -442,13 +412,11 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHistorialDepartamento"));
-
                     b.Property<DateTime?>("FechaFin")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("IdColaborador")
                         .HasColumnType("int");
@@ -471,13 +439,11 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLicencias"));
-
                     b.Property<DateTime>("FechaFin")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("IdColaborador")
                         .HasColumnType("int");
@@ -489,7 +455,7 @@ namespace rrhh_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("IdLicencias");
 
@@ -508,14 +474,12 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoLicencia"));
-
                     b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("TipoLicencia")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("IdTipoLicencia");
 

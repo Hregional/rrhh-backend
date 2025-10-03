@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("rrhh-backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40a6e1f6a839e93f4836eaba401c572a95d8e2fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("rrhh-backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("rrhh-backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

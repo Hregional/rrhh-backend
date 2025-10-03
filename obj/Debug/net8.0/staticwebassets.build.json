@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "YLQdSnHFboD7yxSW138WwwZH+i62IHo+3R57Pl121Ic=",
+  "Hash": "X5+712WRbqyiWcz55SbHWlfXPkm9oH5CAx4yQvC1PW8=",
   "Source": "rrhh-backend",
   "BasePath": "_content/rrhh-backend",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }

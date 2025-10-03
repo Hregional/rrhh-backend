@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rrhh_backend.Data;
 
@@ -10,9 +11,11 @@ using rrhh_backend.Data;
 namespace rrhh_backend.Migrations
 {
     [DbContext(typeof(RrHhContext))]
-    partial class RrHhContextModelSnapshot : ModelSnapshot
+    [Migration("20251002220002_inicialMysql")]
+    partial class inicialMysql
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,13 +335,13 @@ namespace rrhh_backend.Migrations
                     b.Property<string>("DescripcionDepartamento")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("NombreDepartamento")
                         .IsRequired()
                         .HasMaxLength(55)
                         .IsUnicode(false)
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(55)");
 
                     b.HasKey("IdDepartamentos");
 

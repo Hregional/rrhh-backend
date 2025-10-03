@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using MySql.EntityFrameworkCore.Extensions;
 using rrhh_backend.Data;
 using rrhh_backend.Services.Administracion;
 using rrhh_backend.Services.Rrhh;
@@ -13,7 +15,12 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSqlServer<RrHhContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddDbContext<RrHhContext>(options =>
+    options.UseMySQL(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+
+    )
+);
 
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
