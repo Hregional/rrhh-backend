@@ -3,6 +3,7 @@
     public class RHLicencias
     {
         public int IdLicencias { get; set; }
+        public Guid Uuid { get; set; }
         public int IdColaborador { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }

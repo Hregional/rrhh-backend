@@ -24,6 +24,7 @@ namespace rrhh_backend.Services.Rrhh
                 .Select(l => new RHListarLicenciaDto
                 {
                     Id = l.IdLicencias,
+                    Uuid = l.Uuid,
                     IdColaborador = l.IdColaborador,
                     IdTipoLicencia = l.IdTipoLicencia,
                     IdEstadoLicencia = l.IdEstadoLicencia,
@@ -56,6 +57,7 @@ namespace rrhh_backend.Services.Rrhh
             {
                 var licencia = new RHLicencias
                 {
+                    Uuid = Guid.NewGuid(),
                     IdColaborador = idColaborador,
                     IdTipoLicencia = idTipoLicencia,
                     IdEstadoLicencia = idEstadoLicencia,

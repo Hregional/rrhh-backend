@@ -296,6 +296,8 @@ namespace rrhh_backend.Data
                 entity.HasKey(e => e.IdLicencias);
                 entity.ToTable("RHLicencias");
 
+                entity.HasIndex(e => e.Uuid).IsUnique();
+
                 entity.HasOne(d => d.RHColaborador)
                     .WithMany(p => p.RHLicencias)
                     .HasForeignKey(d => d.IdColaborador)

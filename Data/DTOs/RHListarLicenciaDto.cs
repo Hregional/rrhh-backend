@@ -3,6 +3,7 @@
     public class RHListarLicenciaDto
     {
         public int Id { get; set; }
+        public Guid Uuid { get; set; }
         public int IdColaborador { get; set; }
         public int IdTipoLicencia { get; set; }
         public int IdEstadoLicencia { get; set; }
