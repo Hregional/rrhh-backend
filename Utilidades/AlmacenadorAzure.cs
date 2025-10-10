@@ -13,43 +13,49 @@ namespace rrhh_backend.Utilidades
             logger.LogInformation("Connection String: {ConnectionString}", conectionString);
         }
 
-        public async Task<String> GuardarImagen(string contenedor, IFormFile imagen, Guid nombre)
+        public async Task<string> GuardarImagen(string contenedor, IFormFile imagen, Guid nombre)
         {
             var cliente = new BlobContainerClient(conectionString, contenedor);
             await cliente.CreateIfNotExistsAsync();
-            // La siguiente línea se elimina porque causa el error PublicAccessNotPermitted
-            // cliente.SetAccessPolicy(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
             var extension = Path.GetExtension(imagen.FileName);
             var nombreUnico = $"{nombre}{extension}";
             var blob = cliente.GetBlobClient(nombreUnico);
             await blob.UploadAsync(imagen.OpenReadStream());
+            return nombreUnico;
+        }
 
-            // Generar una URL SAS para el blob
-            var sasBuilder = new BlobSasBuilder()
+        public async Task<string> ObtenerUrlConSas(string contenedor, string nombreArchivo)
+        {
+            var cliente = new BlobContainerClient(conectionString, contenedor);
+            var blob = cliente.GetBlobClient(nombreArchivo);
+
+            if (!await blob.ExistsAsync())
+            {
+                return null;
+            }
+
+            var sasBuilder = new BlobSasBuilder
             {
                 BlobContainerName = contenedor,
-                BlobName = nombreUnico,
-                Resource = "b", // "b" para blob
+                BlobName = nombreArchivo,
+                Resource = "b",
                 StartsOn = DateTimeOffset.UtcNow,
-                ExpiresOn = DateTimeOffset.UtcNow.AddDays(1), // Válido por 1 día
+                ExpiresOn = DateTimeOffset.UtcNow.AddDays(1),
             };
-
-            sasBuilder.SetPermissions(BlobSasPermissions.Read); // Permiso de solo lectura
-
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
             var sasToken = sasBuilder.ToSasQueryParameters(new Azure.Storage.StorageSharedKeyCredential(cliente.AccountName, GetAccountKey()));
             return $"{blob.Uri}?{sasToken}";
         }
 
-        public async Task EliminarImagen(string ruta, string contenedor)
+        public async Task EliminarImagen(string nombreArchivo, string contenedor)
         {
-            if (string.IsNullOrEmpty(ruta))
+            if (string.IsNullOrEmpty(nombreArchivo))
             {
                 return;
             }
             var cliente = new BlobContainerClient(conectionString, contenedor);
             await cliente.CreateIfNotExistsAsync();
-            var archivo = Path.GetFileName(new Uri(ruta).AbsolutePath);
-            var blob = cliente.GetBlobClient(archivo);
+            var blob = cliente.GetBlobClient(nombreArchivo);
             await blob.DeleteIfExistsAsync();
         }
 

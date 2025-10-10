@@ -104,5 +104,23 @@ namespace rrhh_backend.Controllers.Rrhh
             }
         }
 
+        [HttpGet("obtener-url-constancia/{idLicencia}")]
+        public async Task<IActionResult> ObtenerUrlConstancia(int idLicencia)
+        {
+            try
+            {
+                var url = await _rrhhLicenciasService.ObtenerUrlConstancia(idLicencia);
+                if (url == null)
+                {
+                    return NotFound("No se encontró la constancia o la licencia no existe.");
+                }
+                return Ok(new { Url = url });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al obtener la URL de la constancia: {ex.Message}");
+            }
+        }
+
     }
 }

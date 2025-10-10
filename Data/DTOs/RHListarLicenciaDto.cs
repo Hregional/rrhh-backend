@@ -14,5 +14,6 @@
         public DateTime FechaFin { get; set; }
         public string EstadoLicencia { get; set; }
         public string Observaciones { get; set; }
+        public string UrlConstancia { get; set; }
     }
 }

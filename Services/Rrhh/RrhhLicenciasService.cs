@@ -37,7 +37,8 @@ namespace rrhh_backend.Services.Rrhh
                     FechaInicio = l.FechaInicio, 
                     FechaFin = l.FechaFin,       
                     EstadoLicencia = l.RHEstadoLicencias.EstadoLicencia,
-                    Observaciones = l.Observaciones
+                    Observaciones = l.Observaciones,
+                    UrlConstancia = l.UrlConstancia
                 })
                 .ToListAsync();
 
@@ -113,6 +114,12 @@ namespace rrhh_backend.Services.Rrhh
                 throw new Exception($"No se encontró la licencia con ID: {idLicencia}");
             }
 
+            // Si ya existe una constancia, eliminarla antes de subir la nueva.
+            if (!string.IsNullOrEmpty(licencia.UrlConstancia))
+            {
+                await _almacenadorAzure.EliminarImagen(licencia.UrlConstancia, "rrhh");
+            }
+
             var extension = Path.GetExtension(archivo.FileName).ToLowerInvariant();
             if (extension != ".pdf" && extension != ".jpg" && extension != ".png")
             {
@@ -124,12 +131,23 @@ namespace rrhh_backend.Services.Rrhh
                 throw new Exception("El tamaño del archivo no puede exceder los 10 MB.");
             }
 
-            var url = await _almacenadorAzure.GuardarImagen("rrhh", archivo, licencia.Uuid);
+            var nombreArchivo = await _almacenadorAzure.GuardarImagen("rrhh", archivo, licencia.Uuid);
 
-            licencia.UrlConstancia = url;
+            licencia.UrlConstancia = nombreArchivo;
             licencia.IdEstadoLicencia = 2; // 2 = Aprobado
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> ObtenerUrlConstancia(int idLicencia)
+        {
+            var licencia = await _context.RHLicencias.FindAsync(idLicencia);
+            if (licencia == null || string.IsNullOrEmpty(licencia.UrlConstancia))
+            {
+                return null;
+            }
+
+            return await _almacenadorAzure.ObtenerUrlConSas("rrhh", licencia.UrlConstancia);
         }
 
     }
