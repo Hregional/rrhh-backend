@@ -20,7 +20,7 @@ namespace rrhh_backend.Utilidades
             var extension = Path.GetExtension(imagen.FileName);
             var nombreUnico = $"{nombre}{extension}";
             var blob = cliente.GetBlobClient(nombreUnico);
-            await blob.UploadAsync(imagen.OpenReadStream());
+            await blob.UploadAsync(imagen.OpenReadStream(), true);
             return nombreUnico;
         }
 
