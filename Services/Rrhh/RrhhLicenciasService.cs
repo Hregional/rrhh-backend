@@ -3,16 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using rrhh_backend.Data;
 using rrhh_backend.Data.DTOs;
 using rrhh_backend.Data.Models;
+using rrhh_backend.Utilidades;
 
 namespace rrhh_backend.Services.Rrhh
 {
     public class RrhhLicenciasService
     {
         private readonly RrHhContext _context;
+        private readonly IAlmacenadorAzure _almacenadorAzure;
 
-        public RrhhLicenciasService(RrHhContext context)
+        public RrhhLicenciasService(RrHhContext context, IAlmacenadorAzure almacenadorAzure)
         {
             _context = context;
+            _almacenadorAzure = almacenadorAzure;
         }
 
         public async Task<List<RHListarLicenciaDto>> GetLicencias()
@@ -101,6 +104,33 @@ namespace rrhh_backend.Services.Rrhh
                 throw new Exception($"Error al actualizar la licencia: {ex.Message}");
             }
         }   
+
+        public async Task SubirConstancia(int idLicencia, IFormFile archivo)
+        {
+            var licencia = await _context.RHLicencias.FindAsync(idLicencia);
+            if (licencia == null)
+            {
+                throw new Exception($"No se encontró la licencia con ID: {idLicencia}");
+            }
+
+            var extension = Path.GetExtension(archivo.FileName).ToLowerInvariant();
+            if (extension != ".pdf" && extension != ".jpg" && extension != ".png")
+            {
+                throw new Exception("El archivo debe ser de tipo PDF, JPG o PNG.");
+            }
+
+            if (archivo.Length > 10 * 1024 * 1024) // 10 MB
+            {
+                throw new Exception("El tamaño del archivo no puede exceder los 10 MB.");
+            }
+
+            var url = await _almacenadorAzure.GuardarImagen("rrhh", archivo, licencia.Uuid);
+
+            licencia.UrlConstancia = url;
+            licencia.IdEstadoLicencia = 2; // 2 = Aprobado
+
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

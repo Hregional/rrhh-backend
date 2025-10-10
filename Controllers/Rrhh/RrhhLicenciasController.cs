@@ -85,5 +85,24 @@ namespace rrhh_backend.Controllers.Rrhh
             }
         }
 
+        [HttpPut("subir-constancia/{idLicencia}")]
+        public async Task<IActionResult> SubirConstancia(int idLicencia, IFormFile archivo)
+        {
+            try
+            {
+                if (archivo == null)
+                {
+                    return BadRequest("No se ha enviado ningún archivo.");
+                }
+
+                await _rrhhLicenciasService.SubirConstancia(idLicencia, archivo);
+                return Ok(new { Message = "Constancia subida y licencia aprobada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al subir la constancia: {ex.Message}");
+            }
+        }
+
     }
 }

@@ -10,6 +10,7 @@
         public string? Observaciones { get; set; }
         public int IdTipoLicencia { get; set; }
         public int IdEstadoLicencia { get; set; }
+        public string? UrlConstancia { get; set; }
         public virtual RHColaborador RHColaborador { get; set; } = null!;
         public virtual RHTipoLicencias RHTipoLicencias { get; set; } = null!;
         public virtual RHEstadoLicencias RHEstadoLicencias { get; set; } = null!;

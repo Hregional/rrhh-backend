@@ -454,6 +454,9 @@ namespace rrhh_backend.Migrations
                     b.Property<string>("Observaciones")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UrlConstancia")
+                        .HasColumnType("longtext");
+
                     b.Property<Guid>("Uuid")
                         .HasColumnType("char(36)");
 

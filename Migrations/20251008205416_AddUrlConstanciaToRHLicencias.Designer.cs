@@ -11,8 +11,8 @@ using rrhh_backend.Data;
 namespace rrhh_backend.Migrations
 {
     [DbContext(typeof(RrHhContext))]
-    [Migration("20251008183135_uuidLicencias")]
-    partial class uuidLicencias
+    [Migration("20251008205416_AddUrlConstanciaToRHLicencias")]
+    partial class AddUrlConstanciaToRHLicencias
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -455,6 +455,9 @@ namespace rrhh_backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Observaciones")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UrlConstancia")
                         .HasColumnType("longtext");
 
                     b.Property<Guid>("Uuid")
