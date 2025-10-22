@@ -39,7 +39,7 @@ namespace rrhh_backend.Utilidades
                 BlobContainerName = contenedor,
                 BlobName = nombreArchivo,
                 Resource = "b",
-                StartsOn = DateTimeOffset.UtcNow,
+                StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5),
                 ExpiresOn = DateTimeOffset.UtcNow.AddDays(1),
             };
             sasBuilder.SetPermissions(BlobSasPermissions.Read);

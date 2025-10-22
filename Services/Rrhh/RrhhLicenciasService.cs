@@ -121,7 +121,7 @@ namespace rrhh_backend.Services.Rrhh
             }
 
             var extension = Path.GetExtension(archivo.FileName).ToLowerInvariant();
-            if (extension != ".pdf" && extension != ".jpg" && extension != ".png")
+            if (extension != ".pdf" && extension != ".jpg" && extension != ".png" && extension != ".jpeg")
             {
                 throw new Exception("El archivo debe ser de tipo PDF, JPG o PNG.");
             }
