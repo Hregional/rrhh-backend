@@ -81,6 +81,9 @@ builder.Services.AddApplicationInsightsTelemetry(new Microsoft.ApplicationInsigh
     ConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
 });
 
+// Agregar tarea programada como servicio alojado
+builder.Services.AddHostedService<rrhh_backend.Services.Hosted.TareaProgramadaService>();
+
 var app = builder.Build();
 
 
