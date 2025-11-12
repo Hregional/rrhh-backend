@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rrhh_backend.Data;
 
@@ -10,9 +11,11 @@ using rrhh_backend.Data;
 namespace rrhh_backend.Migrations
 {
     [DbContext(typeof(RrHhContext))]
-    partial class RrHhContextModelSnapshot : ModelSnapshot
+    [Migration("20251022191700_UpdateAuditoriaEstatusToUseForeignKeys")]
+    partial class UpdateAuditoriaEstatusToUseForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,25 +266,6 @@ namespace rrhh_backend.Migrations
                     b.HasIndex("TrabajadorId");
 
                     b.ToTable("AuditoriaEstatus");
-                });
-
-            modelBuilder.Entity("rrhh_backend.Data.Models.RHAsueto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RHAsueto", (string)null);
                 });
 
             modelBuilder.Entity("rrhh_backend.Data.Models.RHColaborador", b =>

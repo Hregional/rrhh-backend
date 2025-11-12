@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rrhh_backend.Data;
 
@@ -10,9 +11,11 @@ using rrhh_backend.Data;
 namespace rrhh_backend.Migrations
 {
     [DbContext(typeof(RrHhContext))]
-    partial class RrHhContextModelSnapshot : ModelSnapshot
+    [Migration("20251022184040_AddAuditoriaEstatusTable")]
+    partial class AddAuditoriaEstatusTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,14 +235,18 @@ namespace rrhh_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("EstatusAnterior")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("EstatusNuevo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime>("FechaCambio")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int>("IdEstatusAnterior")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdEstatusNuevo")
-                        .HasColumnType("int");
 
                     b.Property<string>("Motivo")
                         .IsRequired()
@@ -256,32 +263,7 @@ namespace rrhh_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdEstatusAnterior");
-
-                    b.HasIndex("IdEstatusNuevo");
-
-                    b.HasIndex("TrabajadorId");
-
                     b.ToTable("AuditoriaEstatus");
-                });
-
-            modelBuilder.Entity("rrhh_backend.Data.Models.RHAsueto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RHAsueto", (string)null);
                 });
 
             modelBuilder.Entity("rrhh_backend.Data.Models.RHColaborador", b =>
@@ -623,36 +605,6 @@ namespace rrhh_backend.Migrations
                     b.Navigation("IdRoleNavigation");
 
                     b.Navigation("IdUsuarioNavigation");
-                });
-
-            modelBuilder.Entity("rrhh_backend.Data.Models.AuditoriaEstatus", b =>
-                {
-                    b.HasOne("rrhh_backend.Data.Models.RHEstadoColaborador", "EstatusAnteriorNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdEstatusAnterior")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_AuditoriaEstatus_EstatusAnterior");
-
-                    b.HasOne("rrhh_backend.Data.Models.RHEstadoColaborador", "EstatusNuevoNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdEstatusNuevo")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_AuditoriaEstatus_EstatusNuevo");
-
-                    b.HasOne("rrhh_backend.Data.Models.RHColaborador", "Trabajador")
-                        .WithMany()
-                        .HasForeignKey("TrabajadorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_AuditoriaEstatus_RHColaborador");
-
-                    b.Navigation("EstatusAnteriorNavigation");
-
-                    b.Navigation("EstatusNuevoNavigation");
-
-                    b.Navigation("Trabajador");
                 });
 
             modelBuilder.Entity("rrhh_backend.Data.Models.RHColaborador", b =>

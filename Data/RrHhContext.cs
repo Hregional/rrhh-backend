@@ -39,6 +39,10 @@ namespace rrhh_backend.Data
 
         public virtual DbSet<RHLicencias> RHLicencias { get; set; }
 
+        public virtual DbSet<AuditoriaEstatus> AuditoriaEstatus { get; set; }
+
+        public virtual DbSet<RHAsueto> RHAsuetos { get; set; }
+
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -325,6 +329,36 @@ namespace rrhh_backend.Data
                 entity.HasKey(e => e.IdEstadoLicencia);
                 entity.ToTable("RHEstadoLicencias");
             });
+
+            modelBuilder.Entity<AuditoriaEstatus>(entity =>
+            {
+                entity.HasOne(d => d.Trabajador)
+                    .WithMany() // Assuming RHColaborador doesn't have a navigation property back to AuditoriaEstatus
+                    .HasForeignKey(d => d.TrabajadorId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_AuditoriaEstatus_RHColaborador");
+
+                entity.HasOne(d => d.EstatusAnteriorNavigation)
+                    .WithMany() // Assuming RHEstadoColaborador doesn't have a navigation property back to AuditoriaEstatus
+                    .HasForeignKey(d => d.IdEstatusAnterior)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_AuditoriaEstatus_EstatusAnterior");
+
+                entity.HasOne(d => d.EstatusNuevoNavigation)
+                    .WithMany() // Assuming RHEstadoColaborador doesn't have a navigation property back to AuditoriaEstatus
+                    .HasForeignKey(d => d.IdEstatusNuevo)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_AuditoriaEstatus_EstatusNuevo");
+            });
+
+            modelBuilder.Entity<RHAsueto>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.ToTable("RHAsueto");
+                entity.Property(e => e.Fecha).IsRequired();
+                entity.Property(e => e.Descripcion).IsRequired().HasMaxLength(255);
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

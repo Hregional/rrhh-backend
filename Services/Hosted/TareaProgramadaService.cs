@@ -2,18 +2,24 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection; // Added
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using rrhh_backend.Data;
+using rrhh_backend.Services.Administracion;
 
 namespace rrhh_backend.Services.Hosted
 {
     public class TareaProgramadaService : BackgroundService
     {
         private readonly ILogger<TareaProgramadaService> _logger;
+        private readonly IServiceScopeFactory _scopeFactory; // Changed
 
-        public TareaProgramadaService(ILogger<TareaProgramadaService> logger)
+        public TareaProgramadaService(ILogger<TareaProgramadaService> logger, IServiceScopeFactory scopeFactory) // Changed
         {
             _logger = logger;
+            _scopeFactory = scopeFactory; // Changed
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -26,41 +32,137 @@ namespace rrhh_backend.Services.Hosted
             while (!stoppingToken.IsCancellationRequested)
             {
                 var now = DateTime.Now;
-                var currentHour = now.Hour;
+                var earlyMorningRun = new DateTime(now.Year, now.Month, now.Day, 10, 40, 0); // 01:00 AM
+                var nightRun = new DateTime(now.Year, now.Month, now.Day, 11, 0, 0);      // 09:00 PM
 
-                // Define the allowed time windows (00:00-04:00 and 20:00-24:00)
-                bool isWithinAllowedTime =
-                    (currentHour >= 0 && currentHour < 4) || // 00:00, 01:00, 02:00, 03:00
-                    (currentHour >= 20 && currentHour < 24); // 20:00, 21:00, 22:00, 23:00
+                DateTime nextRunTime;
 
-                if (isWithinAllowedTime)
+                if (now < earlyMorningRun)
                 {
-                    _logger.LogInformation($"Tarea Programada Service is doing background work at {now:HH:mm:ss}.");
-
-                    // Aquí puedes poner la lógica que quieres que se ejecute en cada iteración.
-                    // Por ejemplo, llamar a otro servicio, hacer una limpieza, etc.
-
-                    // After performing the task, wait for a short interval before checking again
-                    // This prevents a tight loop within the allowed window
-                    await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken); // Check every 5 minutes within the window
+                    nextRunTime = earlyMorningRun;
+                }
+                else if (now < nightRun)
+                {
+                    nextRunTime = nightRun;
                 }
                 else
                 {
-                    _logger.LogInformation($"Tarea Programada Service is currently outside allowed hours ({now:HH:mm:ss}). Waiting to re-check at the next hour.");
+                    // Next run is tomorrow morning
+                    nextRunTime = earlyMorningRun.AddDays(1);
+                }
 
-                    // Calculate delay until the start of the next hour
-                    var nextHour = now.AddHours(1);
-                    var nextHourStart = new DateTime(nextHour.Year, nextHour.Month, nextHour.Day, nextHour.Hour, 0, 0);
-                    var delay = nextHourStart - now;
+                var delay = nextRunTime - now;
 
-                    // Ensure minimum delay if it's very close to the hour mark
-                    if (delay.TotalMilliseconds < 1000)
-                    {
-                        delay = TimeSpan.FromSeconds(1);
-                    }
-
-                    _logger.LogInformation($"Waiting for {delay.TotalMinutes:F2} minutes until {nextHourStart:HH:mm:ss} to re-check.");
+                _logger.LogInformation($"Next background task will run at: {nextRunTime}. Waiting for {delay.TotalHours:F2} hours.");
+                
+                try
+                {
                     await Task.Delay(delay, stoppingToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    // This is expected when the service is stopping.
+                    break;
+                }
+
+
+                if (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                _logger.LogInformation($"Tarea Programada Service is doing background work at {DateTime.Now:HH:mm:ss}.");
+
+                try
+                {
+                    using (var scope = _scopeFactory.CreateScope())
+                    {
+                        var context = scope.ServiceProvider.GetRequiredService<RrHhContext>();
+                        var auditoriaService = scope.ServiceProvider.GetRequiredService<IAuditoriaService>();
+
+                        // --- Lógica Unificada de Estados ---
+
+                        // IDs de Estado (Confirmar desde la tabla RHEstadoColaborador)
+                        var idEstadoActivo = 1;
+                        var idEstadoPermiso = 2;
+                        var idEstadoInactivo = 3; // Asumiendo que 3 es Inactivo/Baja
+                        var idEstadoVacaciones = 4; // Asumiendo 4 es Vacaciones
+                        var idEstadoAsueto = 5;       // NUEVO
+                        var idEstadoFinDeSemana = 6;  // NUEVO
+
+                        var idEstadoLicenciaAprobada = 2; // "Aprobada" en RHEstadoLicencias
+                        var today = DateTime.Now.Date;
+
+                        // Obtener datos de soporte
+                        var asuetos = await context.RHAsuetos.Select(a => a.Fecha.Date).ToListAsync(stoppingToken);
+                        var isHoliday = asuetos.Contains(today);
+                        var isWeekend = today.DayOfWeek == DayOfWeek.Saturday || today.DayOfWeek == DayOfWeek.Sunday;
+
+                        // Obtener todos los colaboradores cuyo estado necesita ser re-evaluado.
+                        // Excluir a los que están inactivos permanentemente.
+                        var colaboradoresParaReevaluar = await context.RHColaboradors
+                            .Where(c => c.IdEstadoColaborador != idEstadoInactivo)
+                            .ToListAsync(stoppingToken);
+
+                        foreach (var colaborador in colaboradoresParaReevaluar)
+                        {
+                            var oldStatus = colaborador.IdEstadoColaborador;
+                            int newStatus;
+                            string changeReason;
+
+                            // Prioridad 1: Licencia activa
+                            var tieneLicenciaActiva = await context.RHLicencias.AnyAsync(l =>
+                                l.IdColaborador == colaborador.IdColaborador &&
+                                l.IdEstadoLicencia == idEstadoLicenciaAprobada &&
+                                l.FechaInicio.Date <= today && l.FechaFin.Date >= today, stoppingToken);
+
+                            if (tieneLicenciaActiva)
+                            {
+                                // Aquí se podría diferenciar entre tipo de licencia si fuera necesario (ej. Permiso vs Vacaciones)
+                                newStatus = idEstadoPermiso; 
+                                changeReason = "Inicio o continuación de Permiso/Licencia";
+                            }
+                            // Prioridad 2: Asueto
+                            else if (isHoliday)
+                            {
+                                newStatus = idEstadoAsueto;
+                                changeReason = "Asueto general";
+                            }
+                            // Prioridad 3: Fin de semana
+                            else if (isWeekend)
+                            {
+                                newStatus = idEstadoFinDeSemana;
+                                changeReason = "Fin de semana";
+                            }
+                            // Prioridad 4: Activo por defecto
+                            else
+                            {
+                                newStatus = idEstadoActivo;
+                                changeReason = "Día laboral activo";
+                            }
+
+                            // Si el estado calculado es diferente al actual, se actualiza.
+                            if (oldStatus != newStatus)
+                            {
+                                colaborador.IdEstadoColaborador = newStatus;
+                                await auditoriaService.RegistrarCambioEstatus(
+                                    colaborador.IdColaborador,
+                                    oldStatus,
+                                    newStatus,
+                                    changeReason,
+                                    "TareaProgramadaService");
+                                _logger.LogInformation($"Cambiando estado para colaborador {colaborador.IdColaborador} de {oldStatus} a {newStatus} ({changeReason})");
+                            }
+                        }
+
+                        await context.SaveChangesAsync(stoppingToken);
+                        _logger.LogInformation("Verificación de estados de colaboradores completada.");
+                        // --- Fin Lógica Unificada ---
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred during the scheduled task. Will retry at the next scheduled time.");
                 }
             }
 

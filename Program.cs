@@ -37,7 +37,8 @@ builder.Services.AddScoped<AdminUserService>();
 builder.Services.AddScoped<AdminUserUserService>();
 builder.Services.AddScoped<RrhhLicenciasService>();
 builder.Services.AddScoped<AdminPermisosService>();
-// Configurar autenticación JWT
+builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
+// Configurar autenticaciï¿½n JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -106,17 +107,17 @@ app.UseCors("MyAllowSpecificOrigins");
 // Redireccionamiento HTTPS
 app.UseHttpsRedirection();
 
-// Autenticación
+// Autenticaciï¿½n
 app.UseAuthentication();
 
-// Autorización
+// Autorizaciï¿½n
 app.UseAuthorization();
 
 //app.UseStaticFiles(new StaticFileOptions
 //{
 //    FileProvider = new PhysicalFileProvider(
 //        Path.Combine(app.Environment.ContentRootPath, "Imagenes")),
-//    RequestPath = "/imagenes" // Ruta desde la cual se servirán los archivos estáticos
+//    RequestPath = "/imagenes" // Ruta desde la cual se servirï¿½n los archivos estï¿½ticos
 //});
 
 app.MapControllers();
