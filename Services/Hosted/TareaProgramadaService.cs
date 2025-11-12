@@ -32,8 +32,8 @@ namespace rrhh_backend.Services.Hosted
             while (!stoppingToken.IsCancellationRequested)
             {
                 var now = DateTime.Now;
-                var earlyMorningRun = new DateTime(now.Year, now.Month, now.Day, 10, 40, 0); // 01:00 AM
-                var nightRun = new DateTime(now.Year, now.Month, now.Day, 11, 0, 0);      // 09:00 PM
+                var earlyMorningRun = new DateTime(now.Year, now.Month, now.Day, 14, 40, 0); // 01:00 AM
+                var nightRun = new DateTime(now.Year, now.Month, now.Day, 21, 0, 0);      // 09:00 PM
 
                 DateTime nextRunTime;
 

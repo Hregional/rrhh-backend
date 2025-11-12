@@ -36,6 +36,7 @@ builder.Services.AddScoped<AdminUserRolService>();
 builder.Services.AddScoped<AdminUserService>();
 builder.Services.AddScoped<AdminUserUserService>();
 builder.Services.AddScoped<RrhhLicenciasService>();
+builder.Services.AddScoped<RrhhAsuetoService>();
 builder.Services.AddScoped<AdminPermisosService>();
 builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 // Configurar autenticaci�n JWT
